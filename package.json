@@ -1,27 +1,34 @@
 {
-  "name": "NAME",
+  "name": "@panzenbaby/stacking-reward-report",
   "version": "0.0.1",
-  "description": "DESCRIPTION",
-  "logo": "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/logo.png",
-  "main": "src/index.js",
-  "author": "Author Name <author@ark.io>",
-  "license": "MIT",
+  "description": "DESCRIPTION TODO",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ark-ecosystem-desktop-plugins/template.git"
+  },
   "desktop-wallet": {
-    "title": "TITLE",
+    "title": "Stacking Reward Report",
+    "logo": "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/explorer/master/images/logo.png",
     "images": [
-      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-1.png",
-      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-2.png",
-      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-3.png",
-      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-4.png",
-      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-5.png"
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/explorer/master/images/preview-1.png",
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/explorer/master/images/preview-2.png"
     ],
-    "categories": [],
+    "categories": [
+      "utility"
+    ],
     "permissions": [
-      "THEMES"
+      "COMPONENTS",
+      "ROUTES",
+      "MENU_ITEMS",
+      "UI_COMPONENTS",
+      "PROFILE_CURRENT",
+      "WEBFRAME"
     ],
-    "urls": [],
     "minimumVersion": "2.6"
   },
+  "author": "Panzenbaby",
+  "license": "MIT",
   "keywords": [
     "@arkecosystem",
     "desktop-wallet",
@@ -33,9 +40,5 @@
   "bugs": {
     "url": "URL"
   },
-  "homepage": "URL",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ark-ecosystem-desktop-plugins/template.git"
-  }
+  "homepage": "URL"
 }
