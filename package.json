@@ -1,0 +1,41 @@
+{
+  "name": "NAME",
+  "version": "0.0.1",
+  "description": "DESCRIPTION",
+  "logo": "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/logo.png",
+  "main": "src/index.js",
+  "author": "Author Name <author@ark.io>",
+  "license": "MIT",
+  "desktop-wallet": {
+    "title": "TITLE",
+    "images": [
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-1.png",
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-2.png",
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-3.png",
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-4.png",
+      "https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/template/master/preview-5.png"
+    ],
+    "categories": [],
+    "permissions": [
+      "THEMES"
+    ],
+    "urls": [],
+    "minimumVersion": "2.6"
+  },
+  "keywords": [
+    "@arkecosystem",
+    "desktop-wallet",
+    "plugin"
+  ],
+  "contributors": [
+    "Author Name <author@ark.io>"
+  ],
+  "bugs": {
+    "url": "URL"
+  },
+  "homepage": "URL",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ark-ecosystem-desktop-plugins/template.git"
+  }
+}
