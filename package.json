@@ -23,7 +23,7 @@
       "MENU_ITEMS",
       "UI_COMPONENTS",
       "PROFILE_CURRENT",
-      "WEBFRAME"
+      "STORAGE"
     ],
     "minimumVersion": "2.6"
   },
