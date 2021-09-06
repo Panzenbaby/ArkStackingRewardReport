@@ -23,7 +23,10 @@
       "MENU_ITEMS",
       "UI_COMPONENTS",
       "PROFILE_CURRENT",
-      "STORAGE"
+      "STORAGE",
+      "ALERTS",
+      "PEER_CURRENT",
+      "UTILS"
     ],
     "minimumVersion": "2.6"
   },

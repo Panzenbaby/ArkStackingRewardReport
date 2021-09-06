@@ -4,7 +4,7 @@ module.exports = {
       {
         path: '/stacking-report',
         name: 'stacking-report',
-        component: 'Report'
+        component: 'Home'
       }
     ]
 

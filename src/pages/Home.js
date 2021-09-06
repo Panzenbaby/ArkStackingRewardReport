@@ -1,4 +1,7 @@
 const Header = require('../components/Header')
+const Footer = require('../components/Footer')
+const TransactionTable = require('../components/TransactionTable')
+const Repository = require('../Repository')
 
 module.exports = {
 
@@ -39,29 +42,48 @@ module.exports = {
               v-else
               class="w-full"
             >
-              <b>Foooooooo</b>
+              <TransactionTable
+                :transactions="repository.stackingRewards"
+              />
             </div>
+          </div>
+          
+          <div v-if="debugMessage">
+            <span class="text-theme-footer-text">
+                {{ debugMessage }}
+            </span>
           </div>
         </div>
       </div>
+      
+      <Footer/>
       </div>
     `,
 
     components: {
-        Header
+        Header,
+        Footer,
+        TransactionTable
     },
 
-    async mounted () {
+    async mounted() {
+        this.repository = new Repository()
+
+        this.isLoading = true
         this.address = walletApi.storage.get('address')
+
         this.updateWallet()
+        await this.repository.changeAddress(this.address)
+
+        this.isLoading = false
     },
 
     computed: {
-        profile () {
+        profile() {
             return walletApi.profiles.getCurrent()
         },
 
-        wallets () {
+        wallets() {
             return this.profile.wallets
         },
 
@@ -77,21 +99,33 @@ module.exports = {
             address: '',
             balance: '',
             vote: ''
-        }
+        },
+        debugMessage: '',
+        transactions: [{
+            year: 0,
+            transactions: [{
+                type: 0
+            }]
+        }]
     }),
 
     methods: {
 
-        openWalletImport () {
+        openWalletImport() {
             walletApi.route.goTo('wallet-import')
         },
 
-        async handleHeaderEvent({component, event, options }) {
+        async handleHeaderEvent({component, event, options}) {
             if (event === 'addressChange') {
                 this.address = options.address
                 walletApi.storage.set('address', this.address)
 
                 this.updateWallet()
+                if (this.wallet) {
+                    this.isLoading = true
+                    this.debugMessage = await this.repository.changeAddress(this.address)
+                    this.isLoading = false
+                }
             }
         },
 
@@ -99,12 +133,13 @@ module.exports = {
             this.wallet = this.wallets.find(wallet => wallet.address === this.address)
 
             if (!this.wallet) {
-                try {
+                if (this.wallets.length > 0) {
                     this.wallet = this.wallets[0]
-                } catch (error) {
-                    // TODO handle error?
+                } else {
+                    this.debugMessage = "Didn't find any wallet"
+                    walletApi.alert.error(this.debugMessage)
                 }
             }
-        }
+        },
     }
 }
