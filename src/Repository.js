@@ -45,7 +45,9 @@ class Repository {
             const transaction = entry[1]
             await this.loadPrices(transaction)
             await this.applyPrices(transaction)
-            Array.prototype.push.apply(this.stackingRewards, this.getStackingRewards(transaction, this.votes))
+
+            const rewards = this.getStackingRewards(transaction, this.votes)
+            Array.prototype.push.apply(this.stackingRewards, rewards)
             // TODO put the stacking rewards into a year map as well to show the selected year only
         }
 
@@ -97,12 +99,24 @@ class Repository {
 
         const result = []
         try {
+            const delegateIds = new Set()
+            response.forEach(transaction => {
+                const vote = transaction.asset.votes[0]
+                const delegatePublicKey = vote.substr(1, vote.length)
+                delegateIds.add(delegatePublicKey)
+            })
+
+            const delegates = await this.getDelegates(delegateIds)
+
             response.forEach(transaction => {
                     const date = transaction.timestamp.unix
                     const vote = transaction.asset.votes[0]
                     const isDownVote = vote[0] === '-'
                     const delegatePublicKey = vote.substr(1, vote.length)
+                    const delegateName = delegates.get(delegatePublicKey)
+
                     result.push({
+                        delegateName: delegateName,
                         delegatePublicKey: delegatePublicKey,
                         date: date,
                         isDownVote: isDownVote
@@ -111,6 +125,22 @@ class Repository {
             )
         } catch (error) {
             walletApi.alert.error(error.message)
+        }
+
+        return result
+    }
+
+    async getDelegates(delegateIds) {
+        const result = new Map()
+        for (const delegateId of delegateIds) {
+            const path = `delegates?publicKey=` + delegateId
+            let response = await walletApi.peers.current.get(path, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+
+            result.set(delegateId, response.data[0].username)
         }
 
         return result
@@ -164,6 +194,9 @@ class Repository {
         transactions.forEach(transaction => {
             if (upVote.date <= transaction.date && transaction.date < downVoteTime
                 && transaction.senderPublicKey === upVote.delegatePublicKey) {
+
+                Object.assign(transaction, {delegateName: upVote.delegateName})
+
                 result.push(transaction)
             }
         })

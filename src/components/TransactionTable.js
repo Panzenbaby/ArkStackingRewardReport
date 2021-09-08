@@ -22,6 +22,12 @@ module.exports = {
                 <span v-else-if="data.column.field === 'closePrice'">
                     {{ getPriceValue(data.row) }}
                 </span>
+                <span v-else-if="data.column.field === 'delegateName'">
+                    {{ data.row.delegateName }}
+                </span>
+                <span v-else-if="data.column.field === 'delegatePublicKey'">
+                    {{ data.row.delegatePublicKey }}
+                </span>
             </template>
         </TableWrapper>
     </span>
@@ -58,6 +64,12 @@ module.exports = {
                 },
                 {
                     label: `From`,
+                    field: 'delegateName',
+                    sortable: false,
+                    thClass: 'whitespace-no-wrap'
+                },
+                {
+                    label: `senderId`,
                     field: 'senderPublicKey',
                     sortable: false,
                     thClass: 'whitespace-no-wrap'
