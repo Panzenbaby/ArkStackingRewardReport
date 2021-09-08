@@ -26,7 +26,11 @@
       "STORAGE",
       "ALERTS",
       "PEER_CURRENT",
-      "UTILS"
+      "UTILS",
+      "HTTP"
+    ],
+    "urls": [
+      "^"
     ],
     "minimumVersion": "2.6"
   },
@@ -38,7 +42,7 @@
     "plugin"
   ],
   "contributors": [
-    "Author Name <author@ark.io>"
+    "Panzenbaby"
   ],
   "bugs": {
     "url": "URL"

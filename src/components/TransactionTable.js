@@ -10,10 +10,17 @@ module.exports = {
             :rows="transactions"
             :columns="columns"
             :has-pagination="false"
+            :has-pagination="true"
         >
             <template slot-scope="data" >
                 <span v-if="data.column.field === 'date'">
                     {{ formatTime(data.row.date) }}
+                </span>
+                <span v-else-if="data.column.field === 'amount'">
+                    {{ getAmountValue(data.row) }}
+                </span>
+                <span v-else-if="data.column.field === 'closePrice'">
+                    {{ getPriceValue(data.row) }}
                 </span>
             </template>
         </TableWrapper>
@@ -38,6 +45,12 @@ module.exports = {
                     thClass: 'whitespace-no-wrap'
                 },
                 {
+                    label: `${this.profile.currency} Value`,
+                    field: `closePrice`,
+                    sortable: false,
+                    thClass: `whitespace-no-wrap`
+                },
+                {
                     label: 'Date',
                     field: 'date',
                     sortable: true,
@@ -60,6 +73,28 @@ module.exports = {
     methods: {
         formatTime(time) {
             return utils.format_time(time, this.profile.language)
+        },
+
+        getPriceValue(transaction) {
+            if (!transaction.closePrice) {
+                return "NaN"
+            }
+
+            const value = transaction.amount * transaction.closePrice
+            const currency = this.profile.currency
+            const language = this.profile.language
+            return utils.formatter_currency(value, currency, language)
+        },
+
+        getAmountValue(transaction) {
+            if (!transaction.amount) {
+                return "NaN"
+            }
+
+            const value = transaction.amount
+            const currency = this.profile.network.token
+            const language = this.profile.language
+            return utils.formatter_currency(value, currency, language)
         }
     }
 }
