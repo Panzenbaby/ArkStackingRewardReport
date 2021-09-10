@@ -93,26 +93,19 @@ module.exports = {
         selectableYears: [],
         rewardSum: undefined,
         debugMessage: '',
+        repository: new Repository()
+
     }),
 
     async mounted() {
         this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
-        this.repository = new Repository()
-
-        this.isLoading = true
         this.address = walletApi.storage.get('address')
+    },
 
-        this.updateWallet()
-        if (this.wallet.address !== this.address) {
-            // fixed bug after deleting selected address from wallet
-            this.setAddress(this.wallet.address)
+    watch: {
+        address: function (address) {
+            this.onAddressChanged(address)
         }
-
-        await this.repository.changeAddress(this.address)
-        this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
-        this.updateCurrentRewardSum()
-
-        this.isLoading = false
     },
 
     methods: {
@@ -124,28 +117,17 @@ module.exports = {
         async handleHeaderEvent({component, event, options}) {
             switch (event) {
                 case "addressChange":
-                    await this.onAddressChanged(options.address)
+                    this.setAddress(options.address)
                     break;
                 case "yearChange":
                     this.onYearChanged(options.year)
                     break;
                 case "reload":
-                    await this.reload()
+                    this.reload()
                     break;
                 case "export":
                     await this.onExport()
                     break;
-            }
-        },
-
-        async onAddressChanged(address) {
-            this.setAddress(address)
-            this.updateWallet()
-
-            if (this.wallet) {
-                this.isLoading = true
-                this.debugMessage = await this.repository.changeAddress(this.address)
-                this.isLoading = false
             }
         },
 
@@ -154,20 +136,31 @@ module.exports = {
             walletApi.storage.set('address', this.address)
         },
 
+        onAddressChanged(address) {
+            this.updateWallet()
+            if (this.wallet.address !== address) {
+                // fixed bug after deleting selected address from wallet
+                this.setAddress(this.wallet.address)
+            }
+
+            this.isLoading = true
+            this.repository.changeAddress(address).then(() => {
+                if (address === this.address) {
+                    // only change the view data if the selected address has not changed since the execution
+                    this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
+                    this.updateCurrentRewardSum()
+                    this.isLoading = false
+                }
+            })
+        },
+
         onYearChanged(year) {
             this.year = year
             this.updateCurrentRewardSum()
         },
 
-        async reload() {
-            this.isLoading = true
-
-            this.updateWallet()
-            await this.repository.changeAddress(this.address)
-            this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
-            this.updateCurrentRewardSum()
-
-            this.isLoading = false
+        reload() {
+            this.onAddressChanged(this.address)
         },
 
         updateWallet() {
