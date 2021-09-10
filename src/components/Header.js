@@ -26,90 +26,84 @@ module.exports = {
             :pin-to-input-width="true"
             @select="emitAddressChange"
           />
-        </div>
-        
-        <div class="flex flex-col border-l border-theme-line-separator px-12">
-          <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-            Balance
-          </span>
-
-          <span class="font-bold">
+          
+          <span class="font-bold mt-1">
             {{ formatCurrency(wallet.balance, profile.network.token) }}
           </span>
         </div>
+      </div>
         
-        <div
-            v-if="!isLoading" 
-            class="flex flex-row">
+      <div
+          v-if="!isLoading" 
+          class="flex flex-row">
             
-            <div class="flex flex-col border-l border-theme-line-separator px-12" >
-                <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                    Period
-                </span>
+          <div class="flex flex-col border-l border-theme-line-separator px-12" >
+              <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+                  Period
+              </span>
     
-                <MenuDropdown
-                    ref="period"
-                    :disabled="isLoading"
-                    :items="years"
-                    :value="selectedYear"
-                    container-classes="whitespace-no-wrap"
-                    @select="onYearChanged" />
-            </div>
+              <MenuDropdown
+                  ref="period"
+                  :disabled="isLoading"
+                  :items="years"
+                  :value="selectedYear"
+                  container-classes="whitespace-no-wrap"
+                  @select="onYearChanged" />
+          </div>
             
-            <div
+          <div
             v-if="rewardSum" 
             class="flex flex-col border-l border-theme-line-separator px-12" >
+          
+            <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+                  Received Stacking Rewards
+            </span>
             
-                <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                    Received Stacking Rewards
-                </span>
+            <span class="font-bold text-green">
+                  {{ formatCurrency(rewardSum, profile.currency) }}
+            </span>
+          </div>
             
-                <span class="font-bold text-green">
-                    {{ formatCurrency(rewardSum, profile.currency) }}
-                </span>
-            </div>
+          <div class="flex items-center" >
             
-            <div class="flex items-center" >
-            
-                <button
-                    class="ContactAll__CreateButton mr-4"
-                    @click="onReloadClicked">
+            <button
+                class="ContactAll__CreateButton mr-4"
+                @click="onReloadClicked">
+                  
+                <span class="ContactAll__CreateButton__icon">
                     
-                    <span class="ContactAll__CreateButton__icon">
-                    
-                        <SvgIcon
-                            name="reload"
-                            view-box="0 0 15 15"
-                        />
-                    </span>
-                </button>
-            </div>
+                    <SvgIcon
+                        name="reload"
+                        view-box="0 0 15 15"
+                    />
+                 </span>
+            </button>
+          </div>
             
-            <div class="flex items-center" >
-            
-                <button
-                    class="ContactAll__CreateButton mr-4"
-                    @click="onExportClicked">
-                    
-                    <span class="ContactAll__CreateButton__icon">
-                    
-                        <SvgIcon
-                            name="arrow-export"
-                            view-box="0 0 15 15"
-                        />
-                    </span>
-                </button>
-            </div>
-        </div>
+          <div class="flex items-center" >
+          
+              <button
+                  class="ContactAll__CreateButton mr-4"
+                  @click="onExportClicked">
+                  
+                  <span class="ContactAll__CreateButton__icon">
+                  
+                      <SvgIcon
+                          name="arrow-export"
+                          view-box="0 0 15 15"
+                      />
+                  </span>
+              </button>
+          </div>
+      </div>
         
-        <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
-             <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                Period
-            </span>
-            <span class="font-semibold">
-                {{ selectedYear }}
-            </span>
-        </div>
+      <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
+           <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+              Period
+          </span>
+          <span class="font-semibold">
+              {{ selectedYear }}
+          </span>
       </div>
     </div>
   `,

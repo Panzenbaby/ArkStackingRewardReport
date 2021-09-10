@@ -27,7 +27,8 @@
       "ALERTS",
       "PEER_CURRENT",
       "UTILS",
-      "HTTP"
+      "HTTP",
+      "DIALOGS"
     ],
     "urls": [
       "min-api.cryptocompare.com"

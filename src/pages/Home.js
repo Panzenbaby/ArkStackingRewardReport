@@ -23,6 +23,7 @@ module.exports = {
         </div>
       
       <div v-else-if="wallet" class="flex flex-col flex-1 overflow-y-hidden" >
+      
         <Header
           :wallet="wallet"
           :isLoading="isLoading"
@@ -71,32 +72,14 @@ module.exports = {
         TransactionTable
     },
 
-    async mounted() {
-        this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
-        this.repository = new Repository()
-
-        this.isLoading = true
-        this.address = walletApi.storage.get('address')
-
-        this.updateWallet()
-        await this.repository.changeAddress(this.address)
-        this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
-        this.updateCurrentRewardSum()
-
-        this.isLoading = false
-    },
-
     computed: {
         profile() {
             return walletApi.profiles.getCurrent()
         },
 
-        wallets() {
-            return this.profile.wallets
-        },
-
         hasWallets() {
-            return !!(this.wallets && this.wallets.length)
+            const wallets = this.profile.wallets
+            return !!(wallets && wallets.length)
         },
     },
 
@@ -105,13 +88,32 @@ module.exports = {
         isLoading: false,
         wallet: {
             address: '',
-            balance: '',
         },
         year: '',
         selectableYears: [],
         rewardSum: undefined,
         debugMessage: '',
     }),
+
+    async mounted() {
+        this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
+        this.repository = new Repository()
+
+        this.isLoading = true
+        this.address = walletApi.storage.get('address')
+
+        this.updateWallet()
+        if (this.wallet.address !== this.address) {
+            // fixed bug after deleting selected address from wallet
+            this.setAddress(this.wallet.address)
+        }
+
+        await this.repository.changeAddress(this.address)
+        this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
+        this.updateCurrentRewardSum()
+
+        this.isLoading = false
+    },
 
     methods: {
 
@@ -131,21 +133,25 @@ module.exports = {
                     await this.reload()
                     break;
                 case "export":
-                    this.onExport()
+                    await this.onExport()
                     break;
             }
         },
 
         async onAddressChanged(address) {
-            this.address = address
-            walletApi.storage.set('address', this.address)
-
+            this.setAddress(address)
             this.updateWallet()
+
             if (this.wallet) {
                 this.isLoading = true
                 this.debugMessage = await this.repository.changeAddress(this.address)
                 this.isLoading = false
             }
+        },
+
+        setAddress(address) {
+            this.address = address
+            walletApi.storage.set('address', this.address)
         },
 
         onYearChanged(year) {
@@ -165,11 +171,12 @@ module.exports = {
         },
 
         updateWallet() {
-            this.wallet = this.wallets.find(wallet => wallet.address === this.address)
+            const wallets = this.profile.wallets
+            this.wallet = wallets.find(wallet => wallet.address === this.address)
 
             if (!this.wallet) {
-                if (this.wallets.length > 0) {
-                    this.wallet = this.wallets[0]
+                if (wallets.length > 0) {
+                    this.wallet = wallets[0]
                 } else {
                     this.debugMessage = "Didn't find any wallet"
                     walletApi.alert.error(this.debugMessage)
@@ -186,8 +193,26 @@ module.exports = {
             this.rewardSum = sum
         },
 
-        onExport() {
-            console.log("export")
+        async onExport() {
+            const rows = []
+            const header = `${this.profile.network.token} Amount | ${this.profile.currency} Value | Date | Transaction ID`
+            rows.push(header)
+
+            this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
+                rows.push(utils.buildExportRow(this.profile, transaction))
+            })
+
+            try {
+                const asString = rows.join("\n")
+                const fileName = `stacking_reward_report_${this.address}_${this.year}.csv`
+                const filePath = await walletApi.dialogs.save(asString, fileName, 'csv')
+
+                if (filePath) {
+                    walletApi.alert.success(`Your report was saved at: ${filePath}`)
+                }
+            } catch (error) {
+                walletApi.alert.error(error)
+            }
         },
     }
 }

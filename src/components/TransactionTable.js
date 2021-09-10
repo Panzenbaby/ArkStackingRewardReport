@@ -8,7 +8,6 @@ module.exports = {
             :rows="transactions"
             :columns="columns"
             :per-page="25"
-            :has-pagination="false"
             :has-pagination="true"
         >
             <template slot-scope="data" >
@@ -107,30 +106,15 @@ module.exports = {
 
     methods: {
         formatTime(time) {
-            return utils.format_time(time, this.profile.language)
+            return utils.formatTime(this.profile, time)
         },
 
         getPriceValue(transaction) {
-            if (!transaction.closePrice) {
-                return "NaN"
-            }
-
-            const tokens = transaction.amount / utils.tokenValueFactor
-            const value = tokens * transaction.closePrice
-            const currency = this.profile.currency
-            const language = this.profile.language
-            return utils.formatter_currency(value, currency, language)
+            return utils.getPriceValue(this.profile, transaction)
         },
 
         getAmountValue(transaction) {
-            if (!transaction.amount) {
-                return "NaN"
-            }
-
-            const value = transaction.amount
-            const currency = this.profile.network.token
-            const language = this.profile.language
-            return utils.formatter_currency(value, currency, language)
+            return utils.getAmountValue(this.profile, transaction)
         }
     }
 }
