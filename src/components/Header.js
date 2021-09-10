@@ -27,6 +27,32 @@ module.exports = {
             @select="emitAddressChange"
           />
         </div>
+        
+        <div
+            v-if="!isLoading"
+            class="flex flex-col border-l border-theme-line-separator px-12"
+        >
+            <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+                Period
+            </span>
+
+            <MenuDropdown
+                ref="period"
+                :disabled="isLoading"
+                :items="years"
+                :value="selectedYear"
+                container-classes="whitespace-no-wrap"
+                @select="onYearChanged"
+            />
+        </div>
+        <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
+             <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+                Period
+            </span>
+            <span class="font-semibold">
+                {{ selectedYear }}
+            </span>
+        </div>
 
         <div class="flex flex-col border-l border-theme-line-separator px-12">
           <span class="text-sm text-theme-page-text-light font-semibold mb-1">
@@ -46,6 +72,18 @@ module.exports = {
             type: Object,
             required: true
         },
+        isLoading: {
+            type: Boolean,
+            required: true
+        },
+        selectedYear: {
+            type: String,
+            required: true
+        },
+        years: {
+            type: Object,
+            required: true
+        },
         callback: {
             type: Function,
             required: true
@@ -53,17 +91,17 @@ module.exports = {
     },
 
     computed: {
-        profile () {
+        profile() {
             return walletApi.profiles.getCurrent()
         },
 
-        addresses () {
+        addresses() {
             return this.profile.wallets.map(wallet => wallet.address)
         }
     },
 
     methods: {
-        executeCallback (event, options) {
+        executeCallback(event, options) {
             this.callback({
                 component: 'Header',
                 event,
@@ -71,11 +109,15 @@ module.exports = {
             })
         },
 
-        emitAddressChange (address) {
-            this.executeCallback('addressChange', { address })
+        emitAddressChange(address) {
+            this.executeCallback('addressChange', {address})
         },
 
-        formatCurrency (value, currency) {
+        onYearChanged(year) {
+            this.executeCallback('yearChange', {year})
+        },
+
+        formatCurrency(value, currency) {
             const balance = Number(value) / 1e8
             return utils.formatter_currency(balance, currency, this.profile.language)
         }

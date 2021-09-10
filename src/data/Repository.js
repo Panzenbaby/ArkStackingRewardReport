@@ -11,6 +11,7 @@ class Repository {
         this.votes = []
         this.prices = []
         this.stackingRewards = []
+        this.stackingRewardsMap = new Map()
     }
 
     async changeAddress(address) {
@@ -20,10 +21,12 @@ class Repository {
     }
 
     async loadData() {
+        const comparator = (lhs, rhs) => lhs.date - rhs.date
+        const comparatorDesc = (lhs, rhs) => rhs.date - lhs.date
+
         this.transactions = await this.remoteDataStore.getTransactions(this.address)
         this.votes = await this.remoteDataStore.getVotes(this.address)
 
-        const comparator = (lhs, rhs) => lhs.date - rhs.date
         this.transactions.sort(comparator)
         this.votes.sort(comparator)
 
@@ -37,17 +40,21 @@ class Repository {
         })
 
         this.stackingRewards = []
+        this.stackingRewardsMap = new Map()
         for (const entry of transactionsMap.entries()) {
+            const year = entry[0]
             const transaction = entry[1]
+
             this.prices = await this.remoteDataStore.loadPrices(transaction)
             await this.applyPrices(transaction)
 
             const rewards = this.remoteDataStore.getStackingRewards(transaction, this.votes)
+            rewards.sort(comparatorDesc)
             Array.prototype.push.apply(this.stackingRewards, rewards)
-            // TODO put the stacking rewards into a year map as well to show the selected year only
+            this.stackingRewardsMap.set(year, rewards)
         }
 
-        this.stackingRewards.sort((lhs, rhs) => rhs.date - lhs.date)
+        this.stackingRewards.sort(comparatorDesc)
     }
 
     async applyPrices(transactions) {

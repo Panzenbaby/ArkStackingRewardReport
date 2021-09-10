@@ -3,12 +3,11 @@ const utils = require('../utils')
 module.exports = {
     template: `
     <span>
-        <span>Found {{transactions.length}} transactions with stacking rewards</span>
-        
         <TableWrapper
             class="w-full"
             :rows="transactions"
             :columns="columns"
+            :per-page="25"
             :has-pagination="false"
             :has-pagination="true"
         >

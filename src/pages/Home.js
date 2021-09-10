@@ -24,6 +24,9 @@ module.exports = {
       <div v-else-if="wallet" class="flex flex-col flex-1 overflow-y-hidden" >
         <Header
           :wallet="wallet"
+          :isLoading="isLoading"
+          :selectedYear="year"
+          :years="selectableYears"
           :callback="handleHeaderEvent"
         />
 
@@ -43,7 +46,7 @@ module.exports = {
               class="w-full"
             >
               <TransactionTable
-                :transactions="repository.stackingRewards"
+                :transactions="repository.stackingRewardsMap.get(year)"
               />
             </div>
           </div>
@@ -74,6 +77,7 @@ module.exports = {
 
         this.updateWallet()
         await this.repository.changeAddress(this.address)
+        this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
 
         this.isLoading = false
     },
@@ -98,15 +102,10 @@ module.exports = {
         wallet: {
             address: '',
             balance: '',
-            vote: ''
         },
+        year: '2021',
+        selectableYears: [],
         debugMessage: '',
-        transactions: [{
-            year: 0,
-            transactions: [{
-                type: 0
-            }]
-        }]
     }),
 
     methods: {
@@ -116,17 +115,30 @@ module.exports = {
         },
 
         async handleHeaderEvent({component, event, options}) {
-            if (event === 'addressChange') {
-                this.address = options.address
-                walletApi.storage.set('address', this.address)
-
-                this.updateWallet()
-                if (this.wallet) {
-                    this.isLoading = true
-                    this.debugMessage = await this.repository.changeAddress(this.address)
-                    this.isLoading = false
-                }
+            switch (event) {
+                case "addressChange":
+                    await this.onAddressChanged(options.address)
+                    break;
+                case "yearChange":
+                    this.onYearChanged(options.year)
+                    break;
             }
+        },
+
+        async onAddressChanged(address) {
+            this.address = address
+            walletApi.storage.set('address', this.address)
+
+            this.updateWallet()
+            if (this.wallet) {
+                this.isLoading = true
+                this.debugMessage = await this.repository.changeAddress(this.address)
+                this.isLoading = false
+            }
+        },
+
+        onYearChanged(year) {
+            this.year = year
         },
 
         updateWallet() {
