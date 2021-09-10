@@ -68,6 +68,38 @@ module.exports = {
                     {{ formatCurrency(rewardSum, profile.currency) }}
                 </span>
             </div>
+            
+            <div class="flex items-center" >
+            
+                <button
+                    class="ContactAll__CreateButton mr-4"
+                    @click="onReloadClicked">
+                    
+                    <span class="ContactAll__CreateButton__icon">
+                    
+                        <SvgIcon
+                            name="reload"
+                            view-box="0 0 15 15"
+                        />
+                    </span>
+                </button>
+            </div>
+            
+            <div class="flex items-center" >
+            
+                <button
+                    class="ContactAll__CreateButton mr-4"
+                    @click="onExportClicked">
+                    
+                    <span class="ContactAll__CreateButton__icon">
+                    
+                        <SvgIcon
+                            name="arrow-export"
+                            view-box="0 0 15 15"
+                        />
+                    </span>
+                </button>
+            </div>
         </div>
         
         <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
@@ -136,8 +168,16 @@ module.exports = {
             this.executeCallback('yearChange', {year})
         },
 
+        onReloadClicked() {
+            this.executeCallback('reload')
+        },
+
+        onExportClicked() {
+            this.executeCallback('export')
+        },
+
         formatCurrency(value, currency) {
             return utils.formatter_currency(value, currency, this.profile.language)
-        }
+        },
     }
 }

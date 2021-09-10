@@ -127,6 +127,12 @@ module.exports = {
                 case "yearChange":
                     this.onYearChanged(options.year)
                     break;
+                case "reload":
+                    await this.reload()
+                    break;
+                case "export":
+                    this.onExport()
+                    break;
             }
         },
 
@@ -145,6 +151,17 @@ module.exports = {
         onYearChanged(year) {
             this.year = year
             this.updateCurrentRewardSum()
+        },
+
+        async reload() {
+            this.isLoading = true
+
+            this.updateWallet()
+            await this.repository.changeAddress(this.address)
+            this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
+            this.updateCurrentRewardSum()
+
+            this.isLoading = false
         },
 
         updateWallet() {
@@ -167,6 +184,10 @@ module.exports = {
                 sum = sum + tokens * transaction.closePrice
             })
             this.rewardSum = sum
+        },
+
+        onExport() {
+            console.log("export")
         },
     }
 }

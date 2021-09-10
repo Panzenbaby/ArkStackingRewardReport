@@ -130,7 +130,6 @@ module.exports = {
             const value = transaction.amount
             const currency = this.profile.network.token
             const language = this.profile.language
-            console.log(value + " " + currency)
             return utils.formatter_currency(value, currency, language)
         }
     }
