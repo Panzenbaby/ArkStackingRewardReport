@@ -32,7 +32,6 @@ class RemoteDataStore {
                         break;
                 }
 
-                amount = amount / 100000000
                 result.push({
                     amount: amount,
                     date: date,

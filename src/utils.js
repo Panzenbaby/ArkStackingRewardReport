@@ -3,17 +3,20 @@
 const secondsOfDay = 24 * 60 * 60
 const millisecondsOfDay = secondsOfDay * 1000
 
+const tokenValueFactor = 1e8
+
 module.exports = {
     secondsOfDay: secondsOfDay,
     millisecondsOfDay: millisecondsOfDay,
+    tokenValueFactor: tokenValueFactor,
 
     formatter_currency: (value, currency, language = 'en') => {
         const isCrypto = currency => {
             return ['ARK', 'BTC', 'ETH', 'LTC'].includes(currency)
         }
 
-        if (isCrypto(value)) {
-            value = Number(value) / 1e8
+        if (isCrypto(currency)) {
+            value = Number(value) / tokenValueFactor
         }
 
         return Number(value).toLocaleString(language, {

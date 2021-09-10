@@ -115,7 +115,8 @@ module.exports = {
                 return "NaN"
             }
 
-            const value = transaction.amount * transaction.closePrice
+            const tokens = transaction.amount / utils.tokenValueFactor
+            const value = tokens * transaction.closePrice
             const currency = this.profile.currency
             const language = this.profile.language
             return utils.formatter_currency(value, currency, language)
@@ -129,6 +130,7 @@ module.exports = {
             const value = transaction.amount
             const currency = this.profile.network.token
             const language = this.profile.language
+            console.log(value + " " + currency)
             return utils.formatter_currency(value, currency, language)
         }
     }

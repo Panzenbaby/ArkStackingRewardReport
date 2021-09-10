@@ -2,6 +2,7 @@ const Header = require('../components/Header')
 const Footer = require('../components/Footer')
 const TransactionTable = require('../components/TransactionTable')
 const Repository = require('../data/Repository')
+const utils = require('../utils')
 
 module.exports = {
 
@@ -162,7 +163,8 @@ module.exports = {
         updateCurrentRewardSum() {
             let sum = 0.0
             this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
-                sum = sum + transaction.amount * transaction.closePrice
+                const tokens = transaction.amount / utils.tokenValueFactor
+                sum = sum + tokens * transaction.closePrice
             })
             this.rewardSum = sum
         },
