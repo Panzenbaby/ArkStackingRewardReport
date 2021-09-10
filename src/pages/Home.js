@@ -1,7 +1,7 @@
 const Header = require('../components/Header')
 const Footer = require('../components/Footer')
 const TransactionTable = require('../components/TransactionTable')
-const Repository = require('../Repository')
+const Repository = require('../data/Repository')
 
 module.exports = {
 
