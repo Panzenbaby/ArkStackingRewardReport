@@ -28,23 +28,48 @@ module.exports = {
           />
         </div>
         
-        <div
-            v-if="!isLoading"
-            class="flex flex-col border-l border-theme-line-separator px-12"
-        >
-            <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                Period
-            </span>
+        <div class="flex flex-col border-l border-theme-line-separator px-12">
+          <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+            Balance
+          </span>
 
-            <MenuDropdown
-                ref="period"
-                :disabled="isLoading"
-                :items="years"
-                :value="selectedYear"
-                container-classes="whitespace-no-wrap"
-                @select="onYearChanged"
-            />
+          <span class="font-bold">
+            {{ formatCurrency(wallet.balance, profile.network.token) }}
+          </span>
         </div>
+        
+        <div
+            v-if="!isLoading" 
+            class="flex flex-row">
+            
+            <div class="flex flex-col border-l border-theme-line-separator px-12" >
+                <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+                    Period
+                </span>
+    
+                <MenuDropdown
+                    ref="period"
+                    :disabled="isLoading"
+                    :items="years"
+                    :value="selectedYear"
+                    container-classes="whitespace-no-wrap"
+                    @select="onYearChanged" />
+            </div>
+            
+            <div
+            v-if="rewardSum" 
+            class="flex flex-col border-l border-theme-line-separator px-12" >
+            
+                <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+                    Received Stacking Rewards
+                </span>
+            
+                <span class="font-bold text-green">
+                    {{ formatCurrency(rewardSum, profile.currency) }}
+                </span>
+            </div>
+        </div>
+        
         <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
              <span class="text-sm text-theme-page-text-light font-semibold mb-1">
                 Period
@@ -52,16 +77,6 @@ module.exports = {
             <span class="font-semibold">
                 {{ selectedYear }}
             </span>
-        </div>
-
-        <div class="flex flex-col border-l border-theme-line-separator px-12">
-          <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-            Balance
-          </span>
-
-          <span class="font-semibold">
-            {{ formatCurrency(wallet.balance, 'ARK') }}
-          </span>
         </div>
       </div>
     </div>
@@ -83,6 +98,10 @@ module.exports = {
         years: {
             type: Object,
             required: true
+        },
+        rewardSum: {
+            type: Number,
+            required: false
         },
         callback: {
             type: Function,
@@ -118,8 +137,7 @@ module.exports = {
         },
 
         formatCurrency(value, currency) {
-            const balance = Number(value) / 1e8
-            return utils.formatter_currency(balance, currency, this.profile.language)
+            return utils.formatter_currency(value, currency, this.profile.language)
         }
     }
 }

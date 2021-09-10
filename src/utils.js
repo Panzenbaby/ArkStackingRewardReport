@@ -12,6 +12,10 @@ module.exports = {
             return ['ARK', 'BTC', 'ETH', 'LTC'].includes(currency)
         }
 
+        if (isCrypto(value)) {
+            value = Number(value) / 1e8
+        }
+
         return Number(value).toLocaleString(language, {
             style: 'currency',
             currencyDisplay: 'code',

@@ -27,6 +27,7 @@ module.exports = {
           :isLoading="isLoading"
           :selectedYear="year"
           :years="selectableYears"
+          :rewardSum="rewardSum"
           :callback="handleHeaderEvent"
         />
 
@@ -70,6 +71,7 @@ module.exports = {
     },
 
     async mounted() {
+        this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
         this.repository = new Repository()
 
         this.isLoading = true
@@ -78,6 +80,7 @@ module.exports = {
         this.updateWallet()
         await this.repository.changeAddress(this.address)
         this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
+        this.updateCurrentRewardSum()
 
         this.isLoading = false
     },
@@ -103,8 +106,9 @@ module.exports = {
             address: '',
             balance: '',
         },
-        year: '2021',
+        year: '',
         selectableYears: [],
+        rewardSum: undefined,
         debugMessage: '',
     }),
 
@@ -139,6 +143,7 @@ module.exports = {
 
         onYearChanged(year) {
             this.year = year
+            this.updateCurrentRewardSum()
         },
 
         updateWallet() {
@@ -152,6 +157,14 @@ module.exports = {
                     walletApi.alert.error(this.debugMessage)
                 }
             }
+        },
+
+        updateCurrentRewardSum() {
+            let sum = 0.0
+            this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
+                sum = sum + transaction.amount * transaction.closePrice
+            })
+            this.rewardSum = sum
         },
     }
 }

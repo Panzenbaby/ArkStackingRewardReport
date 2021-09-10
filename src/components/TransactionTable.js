@@ -22,10 +22,34 @@ module.exports = {
                     {{ getPriceValue(data.row) }}
                 </span>
                 <span v-else-if="data.column.field === 'delegateName'">
-                    {{ data.row.delegateName }}
+                    <a
+                        v-if="true"
+                        v-tooltip="{
+                            content: data.row.senderPublicKey,
+                            trigger: 'hover'
+                        }"
+                        target="_blank"
+                        :href="[profile.network.explorer, 'wallets', data.row.senderPublicKey].join('/')" >
+                        
+                        <span>
+                            {{ data.row.delegateName }}
+                        </span>
+                    </a>
                 </span>
-                <span v-else-if="data.column.field === 'delegatePublicKey'">
-                    {{ data.row.delegatePublicKey }}
+                <span v-else-if="data.column.field === 'transactionId'">
+                    <a
+                        v-if="true"
+                        v-tooltip="{
+                            content: 'Show in Explorer',
+                            trigger: 'hover'
+                        }"
+                        target="_blank"
+                        :href="[profile.network.explorer, 'transaction', data.row.transactionId].join('/')" >
+                        
+                        <span>
+                            {{ data.row.transactionId }}
+                        </span>
+                    </a>
                 </span>
             </template>
         </TableWrapper>
@@ -58,7 +82,7 @@ module.exports = {
                 {
                     label: 'Date',
                     field: 'date',
-                    sortable: true,
+                    sortable: false,
                     tdClass: 'whitespace-no-wrap'
                 },
                 {
@@ -68,8 +92,8 @@ module.exports = {
                     thClass: 'whitespace-no-wrap'
                 },
                 {
-                    label: `senderId`,
-                    field: 'senderPublicKey',
+                    label: `Transaction ID`,
+                    field: 'transactionId',
                     sortable: false,
                     thClass: 'whitespace-no-wrap'
                 }

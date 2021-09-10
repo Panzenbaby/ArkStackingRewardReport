@@ -15,6 +15,7 @@ class RemoteDataStore {
                 const type = parseInt(transaction.type)
                 const date = transaction.timestamp.unix
                 const senderPublicKey = transaction.senderPublicKey
+                const transactionId = transaction.id
 
                 let amount = 0.0
                 switch (type) {
@@ -35,6 +36,7 @@ class RemoteDataStore {
                 result.push({
                     amount: amount,
                     date: date,
+                    transactionId: transactionId,
                     senderPublicKey: senderPublicKey,
                 })
             })
