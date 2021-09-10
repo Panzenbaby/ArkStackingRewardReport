@@ -11,7 +11,7 @@ module.exports = {
     this.menuItems = [
       {
         routeName: 'stacking-report',
-        title: 'Stacking Report'
+        title: 'Stacking Reward Report'
       }
     ]
   },
