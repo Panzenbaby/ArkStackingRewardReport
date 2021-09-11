@@ -158,7 +158,12 @@ module.exports = {
             this.updateWallet()
             if (this.wallet.address !== address) {
                 // fixed bug after deleting selected address from wallet
-                this.setAddress(this.wallet.address)
+                if (this.wallet) {
+                    this.setAddress(this.wallet.address)
+                } else {
+                    this.address = undefined
+                    return
+                }
             }
 
             this.isLoading = true
