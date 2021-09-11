@@ -1,12 +1,11 @@
 const Header = require('../components/Header')
 const Footer = require('../components/Footer')
 const TransactionTable = require('../components/TransactionTable')
+const DisclaimerModal = require('../components/DisclaimerModal')
 const InfoModal = require('../components/InfoModal')
 const Repository = require('../data/Repository')
 const utils = require('../utils')
-
-const KEY_HAS_SEEN_INFO = "hasSeenInfo"
-const KEY_ADDRESS = "address"
+const Keys = require('../Keys')
 
 module.exports = {
 
@@ -62,17 +61,15 @@ module.exports = {
               />
             </div>
           </div>
-          
-          <div v-if="debugMessage">
-            <span class="text-theme-footer-text">
-                {{ debugMessage }}
-            </span>
-          </div>
         </div>
       </div>
       
         <Footer/>
         
+        <DisclaimerModal
+            v-if="!hasAcceptedDisclaimer"
+            :callback="handleDisclaimerModalEvent"/>
+            
         <InfoModal
             v-if="showInfoModal"
             :callback="closeInfoModal"/>
@@ -83,6 +80,7 @@ module.exports = {
         Header,
         Footer,
         TransactionTable,
+        DisclaimerModal,
         InfoModal
     },
 
@@ -94,6 +92,10 @@ module.exports = {
         hasWallets() {
             const wallets = this.profile.wallets
             return !!(wallets && wallets.length)
+        },
+
+        hasAcceptedDisclaimer() {
+            return walletApi.storage.get(Keys.KEY_HAS_ACCEPT_DISCLAIMER)
         }
     },
 
@@ -106,18 +108,13 @@ module.exports = {
         year: '',
         selectableYears: [],
         rewardSum: undefined,
-        debugMessage: '',
         repository: new Repository(),
         showInfoModal: false,
     }),
 
     async mounted() {
         this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
-        this.address = walletApi.storage.get(KEY_ADDRESS)
-
-        if (!walletApi.storage.get(KEY_HAS_SEEN_INFO)) {
-            this.showInfoModal = true
-        }
+        this.address = walletApi.storage.get(Keys.KEY_ADDRESS)
     },
 
     watch: {
@@ -129,24 +126,24 @@ module.exports = {
     methods: {
 
         openWalletImport() {
-            walletApi.route.goTo('wallet-import')
+            walletApi.route.goTo(Keys.WALLET_IMPORT)
         },
 
-        async handleHeaderEvent({component, event, options}) {
+        async handleHeaderEvent(event, options) {
             switch (event) {
-                case "addressChange":
+                case Keys.EVENT_ADDRESS_CHANGED:
                     this.setAddress(options.address)
                     break;
-                case "yearChange":
+                case Keys.EVENT_YEAR_CHANGED:
                     this.onYearChanged(options.year)
                     break;
-                case "reload":
+                case Keys.EVENT_RELOAD:
                     this.reload()
                     break;
-                case "export":
+                case Keys.EVENT_EXPORT:
                     await this.onExport()
                     break;
-                case "info":
+                case Keys.EVENT_INFO:
                     this.showInfoModal = true
                     break;
             }
@@ -154,7 +151,7 @@ module.exports = {
 
         setAddress(address) {
             this.address = address
-            walletApi.storage.set(KEY_ADDRESS, this.address)
+            walletApi.storage.set(Keys.KEY_ADDRESS, this.address)
         },
 
         onAddressChanged(address) {
@@ -192,8 +189,7 @@ module.exports = {
                 if (wallets.length > 0) {
                     this.wallet = wallets[0]
                 } else {
-                    this.debugMessage = "Didn't find any wallet"
-                    walletApi.alert.error(this.debugMessage)
+                    walletApi.alert.error("Didn't find any wallet")
                 }
             }
         },
@@ -211,8 +207,18 @@ module.exports = {
             this.rewardSum = sum
         },
 
+        handleDisclaimerModalEvent(event) {
+            switch(event) {
+                case Keys.CANCEL:
+                    walletApi.route.goTo(Keys.WALLET_DASHBOARD)
+                    break
+                case Keys.CONFIRM:
+                    walletApi.storage.set(Keys.KEY_HAS_ACCEPT_DISCLAIMER, true)
+                    break;
+            }
+        },
+
         closeInfoModal() {
-            walletApi.storage.set(KEY_HAS_SEEN_INFO, true)
             this.showInfoModal = false
         },
 

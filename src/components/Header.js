@@ -1,6 +1,7 @@
 // Part of this file is a copy of https://github.com/dated/delegate-calculator-plugin/blob/master/src/components/Header.js
 const utils = require('../utils')
 const InfoIcon = require('../../images/infoIcon')
+const Keys = require('../Keys')
 
 module.exports = {
     template: `
@@ -164,32 +165,24 @@ module.exports = {
     },
 
     methods: {
-        executeCallback(event, options) {
-            this.callback({
-                component: 'Header',
-                event,
-                options
-            })
-        },
-
         emitAddressChange(address) {
-            this.executeCallback('addressChange', {address})
+            this.callback(Keys.EVENT_ADDRESS_CHANGED, {address})
         },
 
         onYearChanged(year) {
-            this.executeCallback('yearChange', {year})
+            this.callback(Keys.EVENT_YEAR_CHANGED, {year})
         },
 
         onReloadClicked() {
-            this.executeCallback('reload')
+            this.callback(Keys.EVENT_RELOAD)
         },
 
         onExportClicked() {
-            this.executeCallback('export')
+            this.callback(Keys.EVENT_EXPORT)
         },
 
         onInfoClicked() {
-            this.executeCallback('info')
+            this.callback(Keys.EVENT_INFO)
         },
 
         formatCurrency(value, currency) {
