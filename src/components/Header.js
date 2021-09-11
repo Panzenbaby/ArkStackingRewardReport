@@ -1,5 +1,6 @@
-// This is a copy of https://github.com/dated/delegate-calculator-plugin/blob/master/src/components/Header.js
+// Part of this file is a copy of https://github.com/dated/delegate-calculator-plugin/blob/master/src/components/Header.js
 const utils = require('../utils')
+const InfoIcon = require('../../images/infoIcon')
 
 module.exports = {
     template: `
@@ -95,6 +96,19 @@ module.exports = {
                   </span>
               </button>
           </div>
+          
+          <div class="flex items-center" >
+          
+              <button
+                  class="ContactAll__CreateButton mr-4"
+                  @click="onInfoClicked">
+                  
+                  <span class="ContactAll__CreateButton__icon">
+                  
+                      <InfoIcon view-box="0 0 15 15"/>
+                  </span>
+              </button>
+          </div>
       </div>
         
       <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
@@ -107,6 +121,10 @@ module.exports = {
       </div>
     </div>
   `,
+
+    components: {
+        InfoIcon
+    },
 
     props: {
         wallet: {
@@ -168,6 +186,10 @@ module.exports = {
 
         onExportClicked() {
             this.executeCallback('export')
+        },
+
+        onInfoClicked() {
+            this.executeCallback('info')
         },
 
         formatCurrency(value, currency) {

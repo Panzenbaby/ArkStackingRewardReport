@@ -1,8 +1,12 @@
 const Header = require('../components/Header')
 const Footer = require('../components/Footer')
 const TransactionTable = require('../components/TransactionTable')
+const InfoModal = require('../components/InfoModal')
 const Repository = require('../data/Repository')
 const utils = require('../utils')
+
+const KEY_HAS_SEEN_INFO = "hasSeenInfo"
+const KEY_ADDRESS = "address"
 
 module.exports = {
 
@@ -62,14 +66,19 @@ module.exports = {
         </div>
       </div>
       
-      <Footer/>
+        <Footer/>
+        
+        <InfoModal
+            v-if="showInfoModal"
+            :callback="closeInfoModal"/>
       </div>
     `,
 
     components: {
         Header,
         Footer,
-        TransactionTable
+        TransactionTable,
+        InfoModal
     },
 
     computed: {
@@ -93,13 +102,17 @@ module.exports = {
         selectableYears: [],
         rewardSum: undefined,
         debugMessage: '',
-        repository: new Repository()
-
+        repository: new Repository(),
+        showInfoModal: false,
     }),
 
     async mounted() {
         this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
-        this.address = walletApi.storage.get('address')
+        this.address = walletApi.storage.get(KEY_ADDRESS)
+
+        if (!walletApi.storage.get(KEY_HAS_SEEN_INFO)) {
+            this.showInfoModal = true
+        }
     },
 
     watch: {
@@ -128,12 +141,15 @@ module.exports = {
                 case "export":
                     await this.onExport()
                     break;
+                case "info":
+                    this.showInfoModal = true
+                    break;
             }
         },
 
         setAddress(address) {
             this.address = address
-            walletApi.storage.set('address', this.address)
+            walletApi.storage.set(KEY_ADDRESS, this.address)
         },
 
         onAddressChanged(address) {
@@ -184,6 +200,11 @@ module.exports = {
                 sum = sum + tokens * transaction.closePrice
             })
             this.rewardSum = sum
+        },
+
+        closeInfoModal() {
+            walletApi.storage.set(KEY_HAS_SEEN_INFO, true)
+            this.showInfoModal = false
         },
 
         async onExport() {
