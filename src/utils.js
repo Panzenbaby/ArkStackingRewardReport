@@ -10,12 +10,13 @@ module.exports = {
     millisecondsOfDay: millisecondsOfDay,
     tokenValueFactor: tokenValueFactor,
 
-    formatter_currency: (value, currency, language = 'en') => {
-        const isCrypto = currency => {
-            return ['ARK', 'BTC', 'ETH', 'LTC'].includes(currency)
-        }
+    isCrypto(currency) {
+        return ['ARK', 'BTC', 'ETH', 'LTC'].includes(currency)
+    },
 
-        if (isCrypto(currency)) {
+    formatter_currency(value, currency, language = 'en') {
+        const isCrypto = this.isCrypto(currency)
+        if (isCrypto) {
             value = Number(value) / tokenValueFactor
         }
 
@@ -24,7 +25,7 @@ module.exports = {
             currencyDisplay: 'code',
             currency,
             minimumFractionDigits: 2,
-            maximumFractionDigits: isCrypto(currency) ? 8 : 2
+            maximumFractionDigits: isCrypto ? 8 : 2
         })
     },
 
@@ -42,10 +43,15 @@ module.exports = {
             return "NaN"
         }
 
-        const tokens = transaction.amount / this.tokenValueFactor
-        const value = tokens * transaction.closePrice
+        let tokens = transaction.amount
         const currency = profile.currency
         const language = profile.language
+
+        if (!this.isCrypto(currency)) {
+            tokens = tokens / this.tokenValueFactor
+        }
+
+        const value = tokens * transaction.closePrice
         return this.formatter_currency(value, currency, language)
     },
 

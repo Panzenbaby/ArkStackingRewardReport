@@ -15,6 +15,11 @@ module.exports = {
         <div
             v-if="!hasWallets"
             class="relative flex flex-col flex-1 justify-center items-center rounded-lg bg-theme-feature" >
+                
+                <img
+                    class="mb-5"
+                    src="https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/logo.png" >
+                
                 <p class="mb-5">
                     Your profile has no wallets yet.
                 </p>
@@ -89,7 +94,7 @@ module.exports = {
         hasWallets() {
             const wallets = this.profile.wallets
             return !!(wallets && wallets.length)
-        },
+        }
     },
 
     data: () => ({
@@ -194,9 +199,13 @@ module.exports = {
         },
 
         updateCurrentRewardSum() {
+            const curreny = this.profile.currency
             let sum = 0.0
             this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
-                const tokens = transaction.amount / utils.tokenValueFactor
+                let tokens = transaction.amount
+                if (!utils.isCrypto(curreny)) {
+                    tokens = tokens / utils.tokenValueFactor
+                }
                 sum = sum + tokens * transaction.closePrice
             })
             this.rewardSum = sum
