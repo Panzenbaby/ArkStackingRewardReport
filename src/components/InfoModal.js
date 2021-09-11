@@ -1,3 +1,4 @@
+const Strings = require('../Strings')
 
 module.exports = {
 
@@ -8,12 +9,12 @@ module.exports = {
       @close="emitClose"
     >
       <div class="mb-6 text-grey-darker text-lg">
-        <p class="mb-3">
-            This plugin uses the public REST Api from <span class="text-blue-light">https://min-api.cryptocompare.com</span> to get the price of each transaction. The displayed price is the close price of the day the transaction has been proceeded.
+        <p>
+            {{ priceInfoOne }} <span class=\"text-blue-light\">https://min-api.cryptocompare.com</span> {{ priceInfoTwo }}
         </p>
 
-        <p>
-          Special thanks to the delegate <a target="_blank" :href="[profile.network.explorer, 'wallets', 'dated'].join('/')" > <span class="font-semibold">dated</span> </a> for building and maintaining the plugins <span class="font-semibold">Transaction Export</span> and <span class="font-semibold">ARK Delegate Calculator</span> which has been a huge motivation and helped me a lot to understand how to write a plugin.
+        <p class="mt-10">
+            {{ thankInfoOne }} <a target="_blank" :href="[profile.network.explorer, 'wallets', 'dated'].join('/')" > <span class="font-semibold">dated</span> </a> {{ thankInfoTwo }}
         </p>
       </div>
     </ModalConfirmation>
@@ -36,6 +37,23 @@ module.exports = {
     computed: {
         profile() {
             return walletApi.profiles.getCurrent()
+
+        },
+
+        priceInfoOne() {
+            return Strings.getString(this.profile, Strings.INFO_MODAL_PRICES_ONE)
+        },
+
+        priceInfoTwo() {
+            return Strings.getString(this.profile, Strings.INFO_MODAL_PRICES_TWO)
+        },
+
+        thankInfoOne() {
+            return Strings.getString(this.profile, Strings.INFO_MODAL_THANKS_ONE)
+        },
+
+        thankInfoTwo() {
+            return Strings.getString(this.profile, Strings.INFO_MODAL_THANKS_TWO)
         },
     }
 }

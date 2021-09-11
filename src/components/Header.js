@@ -2,6 +2,7 @@
 const utils = require('../utils')
 const InfoIcon = require('../../images/infoIcon')
 const Keys = require('../Keys')
+const Strings = require('../Strings')
 
 module.exports = {
     template: `
@@ -18,7 +19,7 @@ module.exports = {
 
         <div class="flex flex-col pr-12">
           <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-            Address
+            {{ addressString }}
           </span>
 
           <MenuDropdown
@@ -41,7 +42,7 @@ module.exports = {
             
           <div class="flex flex-col border-l border-theme-line-separator px-12" >
               <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                  Period
+                  {{ periodString }}
               </span>
     
               <MenuDropdown
@@ -58,7 +59,7 @@ module.exports = {
             class="flex flex-col border-l border-theme-line-separator px-12" >
           
             <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                  Received Stacking Rewards
+                  {{ receivedStackingRewards }}
             </span>
             
             <span class="font-bold text-green">
@@ -70,7 +71,11 @@ module.exports = {
             
             <button
                 class="ContactAll__CreateButton mr-4"
-                @click="onReloadClicked">
+                @click="onReloadClicked"
+                v-tooltip="{
+                    content: reloadString,
+                    trigger: 'hover'
+                }">
                   
                 <span class="ContactAll__CreateButton__icon">
                     
@@ -86,7 +91,11 @@ module.exports = {
           
               <button
                   class="ContactAll__CreateButton mr-4"
-                  @click="onExportClicked">
+                  @click="onExportClicked"
+                  v-tooltip="{
+                    content: exportString,
+                    trigger: 'hover'
+                  }">
                   
                   <span class="ContactAll__CreateButton__icon">
                   
@@ -114,7 +123,7 @@ module.exports = {
         
       <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
            <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-              Period
+              {{ periodString }}
           </span>
           <span class="font-semibold">
               {{ selectedYear }}
@@ -161,6 +170,26 @@ module.exports = {
 
         addresses() {
             return this.profile.wallets.map(wallet => wallet.address)
+        },
+
+        receivedStackingRewards() {
+            return Strings.getString(this.profile, Strings.RECEIVED_STACKING_REWARDS)
+        },
+
+        periodString() {
+            return Strings.getString(this.profile, Strings.PERIOD)
+        },
+
+        addressString() {
+            return Strings.getString(this.profile, Strings.ADDRESS)
+        },
+
+        exportString() {
+            return Strings.getString(this.profile, Strings.TOOLTIP_EXPORT)
+        },
+
+        reloadString() {
+            return Strings.getString(this.profile, Strings.TOOLTIP_RELOAD)
         }
     },
 

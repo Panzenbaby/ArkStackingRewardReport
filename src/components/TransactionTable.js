@@ -1,4 +1,5 @@
 const utils = require('../utils')
+const Strings = require("../Strings");
 
 module.exports = {
     template: `
@@ -37,9 +38,8 @@ module.exports = {
                 </span>
                 <span v-else-if="data.column.field === 'transactionId'">
                     <a
-                        v-if="true"
                         v-tooltip="{
-                            content: 'Show in Explorer',
+                            content: showInExplorer,
                             trigger: 'hover'
                         }"
                         target="_blank"
@@ -66,32 +66,32 @@ module.exports = {
         columns() {
             return [
                 {
-                    label: `${this.profile.network.token} Amount`,
+                    label: `${this.profile.network.token} ${this.amountLabel}`,
                     field: 'amount',
                     sortable: false,
                     type: 'number',
                     thClass: 'whitespace-no-wrap'
                 },
                 {
-                    label: `${this.profile.currency} Value`,
+                    label: `${this.profile.currency} ${this.valueLabel}`,
                     field: `closePrice`,
                     sortable: false,
                     thClass: `whitespace-no-wrap`
                 },
                 {
-                    label: 'Date',
+                    label: this.dateLabel,
                     field: 'date',
                     sortable: false,
                     tdClass: 'whitespace-no-wrap'
                 },
                 {
-                    label: `From`,
+                    label: this.fromLabel,
                     field: 'delegateName',
                     sortable: false,
                     thClass: 'whitespace-no-wrap'
                 },
                 {
-                    label: `Transaction ID`,
+                    label: this.transactionLabel,
                     field: 'transactionId',
                     sortable: false,
                     thClass: 'whitespace-no-wrap'
@@ -101,7 +101,26 @@ module.exports = {
 
         profile() {
             return walletApi.profiles.getCurrent()
-        }
+        },
+
+        valueLabel() {
+            return Strings.getString(this.profile, Strings.TABLE_HEADER_VALUE)
+        },
+        amountLabel() {
+            return Strings.getString(this.profile, Strings.TABLE_HEADER_AMOUNT)
+        },
+        dateLabel() {
+            return Strings.getString(this.profile, Strings.TABLE_HEADER_DATE)
+        },
+        fromLabel() {
+            return Strings.getString(this.profile, Strings.TABLE_HEADER_FROM)
+        },
+        transactionLabel() {
+            return Strings.getString(this.profile, Strings.TABLE_HEADER_TRANSACTION)
+        },
+        showInExplorer() {
+            return Strings.getString(this.profile, Strings.SHOW_IN_EXPLORER)
+        },
     },
 
     methods: {
@@ -116,5 +135,5 @@ module.exports = {
         getAmountValue(transaction) {
             return utils.getAmountValue(this.profile, transaction)
         }
-    }
+    },
 }

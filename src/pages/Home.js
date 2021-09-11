@@ -6,6 +6,7 @@ const InfoModal = require('../components/InfoModal')
 const Repository = require('../data/Repository')
 const utils = require('../utils')
 const Keys = require('../Keys')
+const Strings = require('../Strings')
 
 module.exports = {
 
@@ -20,13 +21,13 @@ module.exports = {
                     src="https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/logo.png" >
                 
                 <p class="mb-5">
-                    Your profile has no wallets yet.
+                    {{ noWalletMessage }}
                 </p>
 
                 <button
                     class="flex items-center text-blue hover:underline"
                     @click="openWalletImport" >
-                        Import a wallet now
+                        {{ walletImportNow }}
                 </button>
         </div>
       
@@ -96,6 +97,13 @@ module.exports = {
 
         hasAcceptedDisclaimer() {
             return walletApi.storage.get(Keys.KEY_HAS_ACCEPT_DISCLAIMER)
+        },
+
+        noWalletMessage() {
+            return Strings.getString(this.profile, Strings.NO_WALLET_MESSAGE)
+        },
+        walletImportNow() {
+            return Strings.getString(this.profile, Strings.WALLET_IMPORT_NOW)
         }
     },
 
@@ -213,7 +221,7 @@ module.exports = {
         },
 
         handleDisclaimerModalEvent(event) {
-            switch(event) {
+            switch (event) {
                 case Keys.CANCEL:
                     walletApi.route.goTo(Keys.WALLET_DASHBOARD)
                     break
@@ -229,7 +237,11 @@ module.exports = {
 
         async onExport() {
             const rows = []
-            const header = `${this.profile.network.token} Amount | ${this.profile.currency} Value | Date | Transaction ID`
+            const amount = Strings.getString(this.profile, Strings.TABLE_HEADER_AMOUNT)
+            const value = Strings.getString(this.profile, Strings.TABLE_HEADER_VALUE)
+            const date = Strings.getString(this.profile, Strings.TABLE_HEADER_DATE)
+            const transactionId = Strings.getString(this.profile, Strings.TABLE_HEADER_TRANSACTION)
+            const header = `${this.profile.network.token} ${amount} | ${this.profile.currency} ${value} | ${date} | ${transactionId}`
             rows.push(header)
 
             this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
@@ -242,7 +254,8 @@ module.exports = {
                 const filePath = await walletApi.dialogs.save(asString, fileName, 'csv')
 
                 if (filePath) {
-                    walletApi.alert.success(`Your report was saved at: ${filePath}`)
+                    const message = Strings.getString(this.profile, Strings.EXPORT_SUCCESS)
+                    walletApi.alert.success(message + ` ${filePath}`)
                 }
             } catch (error) {
                 walletApi.alert.error(error)
