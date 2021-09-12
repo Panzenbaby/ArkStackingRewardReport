@@ -39,7 +39,7 @@ module.exports = {
                     class="mb-5"
                     src="https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/logo.png" >
                 
-                <span class="mb-5"> {{ noWalletMessage }} </span>
+                <span class="mb-5">{{ noWalletMessage }}</span>
 
                 <button
                     class="flex items-center text-blue hover:underline"
@@ -129,6 +129,10 @@ module.exports = {
         repository: new Repository(),
         showInfoModal: false,
         error: undefined,
+        noWalletMessage: '',
+        walletImportNow: '',
+        errorTitleLabel: '',
+        retryLabel: ''
     }),
 
     async mounted() {

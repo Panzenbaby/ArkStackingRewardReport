@@ -19,7 +19,7 @@ module.exports = {
 
         <div class="flex flex-col pr-12">
           <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-            {{ addressString }}
+            {{ addressLabel }}
           </span>
 
           <MenuDropdown
@@ -38,7 +38,7 @@ module.exports = {
         
       <div v-if="!isLoading" class="flex flex-col border-l border-theme-line-separator px-12" >
           <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-              {{ periodString }}
+              {{ periodLabel }}
           </span>
     
           <MenuDropdown
@@ -68,7 +68,7 @@ module.exports = {
             class="ContactAll__CreateButton mr-4"
             @click="onReloadClicked"
             v-tooltip="{
-                content: reloadString,
+                content: reloadLabel,
                 trigger: 'hover'
             }">
                   
@@ -87,7 +87,7 @@ module.exports = {
               class="ContactAll__CreateButton mr-4"
               @click="onExportClicked"
               v-tooltip="{
-                content: exportString,
+                content: exportLabel,
                 trigger: 'hover'
               }">
                   
@@ -104,7 +104,11 @@ module.exports = {
       <div v-if="!isLoading" class="flex items-center" >
           <button
               class="ContactAll__CreateButton mr-4"
-              @click="onInfoClicked">
+              @click="onInfoClicked"
+              v-tooltip="{
+                content: infoLabel,
+                trigger: 'hover'
+              }">
                   
               <span class="ContactAll__CreateButton__icon">
                   
@@ -115,7 +119,7 @@ module.exports = {
         
       <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
            <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-              {{ periodString }}
+              {{ periodLabel }}
           </span>
           <span class="font-semibold">
               {{ selectedYear }}
@@ -123,6 +127,15 @@ module.exports = {
       </div>
     </div>
   `,
+
+    data: () => ({
+        receivedStackingRewards: '',
+        periodLabel: '',
+        addressLabel: '',
+        exportLabel: '',
+        reloadLabel: '',
+        infoLabel: '',
+    }),
 
     components: {
         InfoIcon
@@ -163,26 +176,6 @@ module.exports = {
         addresses() {
             return this.profile.wallets.map(wallet => wallet.address)
         },
-
-        receivedStackingRewards() {
-            return Strings.getString(this.profile, Strings.RECEIVED_STACKING_REWARDS)
-        },
-
-        periodString() {
-            return Strings.getString(this.profile, Strings.PERIOD)
-        },
-
-        addressString() {
-            return Strings.getString(this.profile, Strings.ADDRESS)
-        },
-
-        exportString() {
-            return Strings.getString(this.profile, Strings.TOOLTIP_EXPORT)
-        },
-
-        reloadString() {
-            return Strings.getString(this.profile, Strings.TOOLTIP_RELOAD)
-        }
     },
 
     methods: {
@@ -209,5 +202,14 @@ module.exports = {
         formatCurrency(value, currency) {
             return utils.formatter_currency(value, currency, this.profile.language)
         },
+    },
+
+    mounted() {
+        this.receivedStackingRewards = Strings.getString(this.profile, Strings.RECEIVED_STACKING_REWARDS)
+        this.periodLabel = Strings.getString(this.profile, Strings.PERIOD)
+        this.addressLabel = Strings.getString(this.profile, Strings.ADDRESS)
+        this.exportLabel = Strings.getString(this.profile, Strings.TOOLTIP_EXPORT)
+        this.reloadLabel = Strings.getString(this.profile, Strings.TOOLTIP_RELOAD)
+        this.infoLabel = Strings.getString(this.profile, Strings.INFO)
     }
 }
