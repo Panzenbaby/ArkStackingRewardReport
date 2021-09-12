@@ -12,17 +12,34 @@ module.exports = {
 
     template: `
       <div class="flex flex-col flex-1 overflow-y-auto">
+      
         <div
-            v-if="!hasWallets"
+            v-if="error"
+            class="relative flex flex-col flex-1 justify-center items-center rounded-lg bg-theme-feature">
+            
+                <span class="font-bold" style="font-size:20pt">{{ errorTitleLabel }}</span>
+                <span class="font-bold text-red mt-6 mb-6" style="font-size:16pt">
+                    {{ error.message }}
+                </span>
+                
+                <button
+                  class="ContactAll__CreateButton justify-end"
+                  @click="onRetryClicked"
+                >
+                  <span class="flex items-center h-10 px-4 whitespace-no-wrap">
+                    {{ retryLabel }}
+                  </span>
+                </button>
+        </div>
+        <div
+            v-else-if="!hasWallets"
             class="relative flex flex-col flex-1 justify-center items-center rounded-lg bg-theme-feature" >
                 
                 <img
                     class="mb-5"
                     src="https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/logo.png" >
                 
-                <p class="mb-5">
-                    {{ noWalletMessage }}
-                </p>
+                <span class="mb-5"> {{ noWalletMessage }} </span>
 
                 <button
                     class="flex items-center text-blue hover:underline"
@@ -31,39 +48,39 @@ module.exports = {
                 </button>
         </div>
       
-      <div v-else-if="wallet" class="flex flex-col flex-1 overflow-y-hidden" >
+        <div v-else-if="wallet" class="flex flex-col flex-1 overflow-y-hidden" >
       
-        <Header
-          :wallet="wallet"
-          :isLoading="isLoading"
-          :selectedYear="year"
-          :years="selectableYears"
-          :rewardSum="rewardSum"
-          :callback="handleHeaderEvent"
-        />
+          <Header
+            :wallet="wallet"
+            :isLoading="isLoading"
+            :selectedYear="year"
+            :years="selectableYears"
+            :rewardSum="rewardSum"
+            :callback="handleHeaderEvent"
+          />
 
-        <div class="flex flex-col flex-1 p-10 rounded-lg bg-theme-feature overflow-y-auto">
-          <div class="flex flex-1">
-            <div
-              v-if="isLoading"
-              class="relative flex items-center mx-auto w-md"
-            >
-              <div class="mx-auto">
-                <Loader />
+          <div class="flex flex-col flex-1 p-10 rounded-lg bg-theme-feature overflow-y-auto">
+            <div class="flex flex-1">
+              <div
+                v-if="isLoading"
+                class="relative flex items-center mx-auto w-md"
+              >
+                <div class="mx-auto">
+                  <Loader />
+                </div>
               </div>
-            </div>
 
-            <div
-              v-else
-              class="w-full"
-            >
-              <TransactionTable
-                :transactions="repository.stackingRewardsMap.get(year)"
-              />
+              <div
+               v-else
+                class="w-full"
+              >
+                <TransactionTable
+                  :transactions="repository.stackingRewardsMap.get(year)"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       
         <Footer/>
         
@@ -98,13 +115,6 @@ module.exports = {
         hasAcceptedDisclaimer() {
             return walletApi.storage.get(Keys.KEY_HAS_ACCEPT_DISCLAIMER)
         },
-
-        noWalletMessage() {
-            return Strings.getString(this.profile, Strings.NO_WALLET_MESSAGE)
-        },
-        walletImportNow() {
-            return Strings.getString(this.profile, Strings.WALLET_IMPORT_NOW)
-        }
     },
 
     data: () => ({
@@ -118,11 +128,17 @@ module.exports = {
         rewardSum: undefined,
         repository: new Repository(),
         showInfoModal: false,
+        error: undefined,
     }),
 
     async mounted() {
         this.year = walletApi.utils.datetime(Date.now()).format('YYYY')
         this.address = walletApi.storage.get(Keys.KEY_ADDRESS)
+
+        this.noWalletMessage = Strings.getString(this.profile, Strings.NO_WALLET_MESSAGE)
+        this.walletImportNow = Strings.getString(this.profile, Strings.WALLET_IMPORT_NOW)
+        this.errorTitleLabel = Strings.getString(this.profile, Strings.ERROR_TITLE)
+        this.retryLabel = Strings.getString(this.profile, Strings.RETRY)
     },
 
     watch: {
@@ -179,9 +195,12 @@ module.exports = {
                 if (address === this.address) {
                     // only change the view data if the selected address has not changed since the execution
                     this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
+                    this.year = this.selectableYears[this.selectableYears.length - 1]
                     this.updateCurrentRewardSum()
                     this.isLoading = false
                 }
+            }).catch((error) => {
+                this.error = error
             })
         },
 
@@ -233,6 +252,11 @@ module.exports = {
 
         closeInfoModal() {
             this.showInfoModal = false
+        },
+
+        onRetryClicked() {
+            this.error = undefined
+            this.reload()
         },
 
         async onExport() {

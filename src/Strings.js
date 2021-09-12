@@ -29,6 +29,8 @@ const SHOW_IN_EXPLORER = "SHOW_IN_EXPLORER"
 const FOOTER = "FOOTER"
 const CANCEL = "CANCEL"
 const ACCEPT = "ACCEPT"
+const RETRY = "RETRY"
+const ERROR_TITLE = "ERROR_TITLE"
 
 const en = {
     NO_WALLET_MESSAGE: "Your profile has no wallets yet.",
@@ -55,6 +57,8 @@ const en = {
     FOOTER: "Made with ♥ by ",
     CANCEL: "Cancel",
     ACCEPT: "Accept",
+    RETRY: "Retry",
+    ERROR_TITLE: "An error occurred",
 }
 
 const de = {
@@ -82,6 +86,8 @@ const de = {
     FOOTER: "Gemacht mit ♥ von",
     CANCEL: "Abbrechen",
     ACCEPT: "Akzeptieren",
+    RETRY: "Erneut versuchen",
+    ERROR_TITLE: "Es ist ein Fehler aufgetreten",
 }
 
 module.exports = {
@@ -129,4 +135,6 @@ module.exports = {
     FOOTER: FOOTER,
     CANCEL: CANCEL,
     ACCEPT: ACCEPT,
+    RETRY: RETRY,
+    ERROR_TITLE: ERROR_TITLE,
 }

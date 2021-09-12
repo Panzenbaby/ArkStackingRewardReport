@@ -40,7 +40,8 @@ class RemoteDataStore {
                 })
             })
         } catch (error) {
-            walletApi.alert.error(error.message)
+            console.log(error)
+            throw error
         }
         return result
     }
@@ -76,7 +77,8 @@ class RemoteDataStore {
                 }
             )
         } catch (error) {
-            walletApi.alert.error(error.message)
+            console.log(error)
+            throw error
         }
 
         return result
@@ -84,40 +86,41 @@ class RemoteDataStore {
 
     async getDelegates(delegateIds) {
         const result = new Map()
-        for (const delegateId of delegateIds) {
-            const path = `delegates?publicKey=` + delegateId
-            let response = await walletApi.peers.current.get(path, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
+        try {
+            for (const delegateId of delegateIds) {
+                const path = `delegates?publicKey=` + delegateId
+                let response = await walletApi.peers.current.get(path, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
 
-            result.set(delegateId, response.data[0].username)
+                result.set(delegateId, response.data[0].username)
+            }
+        } catch (error) {
+            console.log(error)
+            throw error
         }
 
         return result
     }
 
     async getAllPagesOf(requestPath) {
-        try {
-            let page = 1
-            let data = []
-            let result = []
-            do {
-                let response = await walletApi.peers.current.get(requestPath + `&page=${page}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                data = response.data
-                Array.prototype.push.apply(result, data)
-                page++
-            } while (data && data.length > 0)
+        let page = 1
+        let data = []
+        let result = []
+        do {
+            let response = await walletApi.peers.current.get(requestPath + `&page=${page}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            data = response.data
+            Array.prototype.push.apply(result, data)
+            page++
+        } while (data && data.length > 0)
 
-            return result
-        } catch (error) {
-            walletApi.alert.error(error.message)
-        }
+        return result
     }
 
     getStackingRewards(transactions, votes) {
@@ -156,41 +159,31 @@ class RemoteDataStore {
         return {result: result, downVoteTime: downVoteTime}
     }
 
-    async getDelegates(delegateIds) {
-        const result = new Map()
-        for (const delegateId of delegateIds) {
-            const path = `delegates?publicKey=` + delegateId
-            let response = await walletApi.peers.current.get(path, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-
-            result.set(delegateId, response.data[0].username)
-        }
-
-        return result
-    }
-
     async loadPrices(transactions) {
         const prices = []
-        if (transactions.length > 0) {
-            const profile = walletApi.profiles.getCurrent()
-            const lastTransactionTime = transactions[transactions.length - 1].date
-            const fromTime = Math.round(transactions[0].date)
-            const query = {
-                fsym: profile.network.token,
-                tsym: profile.currency,
-                toTs: lastTransactionTime,
-                limit: utils.days_since(fromTime)
+
+        try {
+            if (transactions.length > 0) {
+                const profile = walletApi.profiles.getCurrent()
+                const lastTransactionTime = transactions[transactions.length - 1].date
+                const fromTime = Math.round(transactions[0].date)
+                const query = {
+                    fsym: profile.network.token,
+                    tsym: profile.currency,
+                    toTs: lastTransactionTime,
+                    limit: utils.days_since(fromTime)
+                }
+
+                const {body} = await walletApi.http.get('https://min-api.cryptocompare.com/data/histoday', {
+                    query: query,
+                    json: true
+                })
+
+                Array.prototype.push.apply(prices, body.Data)
             }
-
-            const {body} = await walletApi.http.get('https://min-api.cryptocompare.com/data/histoday', {
-                query: query,
-                json: true
-            })
-
-            Array.prototype.push.apply(prices, body.Data)
+        } catch (error) {
+            console.log(error)
+            throw error
         }
 
         return prices
