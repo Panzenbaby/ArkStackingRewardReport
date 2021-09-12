@@ -12,7 +12,7 @@ class Repository {
         this.address = ''
         this.votes = []
         this.transactionsMap = new Map()
-        this.stackingRewardsMap = new Map()
+        this.stakingRewardsMap = new Map()
     }
 
     async changeAddress(address) {
@@ -41,7 +41,7 @@ class Repository {
     }
 
     async updatePrices() {
-        this.stackingRewardsMap = new Map()
+        this.stakingRewardsMap = new Map()
 
         for (const entry of this.transactionsMap.entries()) {
             const year = entry[0]
@@ -50,9 +50,9 @@ class Repository {
             const prices = await this.remoteDataStore.loadPrices(transaction)
             await this.applyPrices(transaction, prices)
 
-            const rewards = this.remoteDataStore.getStackingRewards(transaction, this.votes)
+            const rewards = this.remoteDataStore.getStakingRewards(transaction, this.votes)
             rewards.sort(this.dateComparatorDesc)
-            this.stackingRewardsMap.set(year, rewards)
+            this.stakingRewardsMap.set(year, rewards)
         }
     }
 

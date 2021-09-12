@@ -55,7 +55,7 @@ module.exports = {
         class="flex flex-col border-l border-theme-line-separator px-12" >
           
         <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-              {{ receivedStackingRewards }}
+              {{ receivedStakingRewards }}
         </span>
             
         <span class="font-bold text-green">
@@ -129,7 +129,7 @@ module.exports = {
   `,
 
     data: () => ({
-        receivedStackingRewards: '',
+        receivedStakingRewards: '',
         periodLabel: '',
         addressLabel: '',
         exportLabel: '',
@@ -205,7 +205,7 @@ module.exports = {
     },
 
     mounted() {
-        this.receivedStackingRewards = Strings.getString(this.profile, Strings.RECEIVED_STACKING_REWARDS)
+        this.receivedStakingRewards = Strings.getString(this.profile, Strings.RECEIVED_STAKING_REWARDS)
         this.periodLabel = Strings.getString(this.profile, Strings.PERIOD)
         this.addressLabel = Strings.getString(this.profile, Strings.ADDRESS)
         this.exportLabel = Strings.getString(this.profile, Strings.TOOLTIP_EXPORT)

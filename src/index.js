@@ -2,16 +2,16 @@ module.exports = {
   register () {
     this.routes = [
       {
-        path: '/stacking-report',
-        name: 'stacking-report',
+        path: '/staking-report',
+        name: 'staking-report',
         component: 'Home'
       }
     ]
 
     this.menuItems = [
       {
-        routeName: 'stacking-report',
-        title: 'Stacking Reward Report'
+        routeName: 'staking-report',
+        title: 'Staking Reward Report'
       }
     ]
   },

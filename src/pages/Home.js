@@ -37,7 +37,7 @@ module.exports = {
                 
                 <img
                     class="mb-5"
-                    src="https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/logo.png" >
+                    src="https://raw.githubusercontent.com/Panzenbaby/ArkStakingRewardReport/master/images/logo.png" >
                 
                 <span class="mb-5">{{ noWalletMessage }}</span>
 
@@ -75,7 +75,7 @@ module.exports = {
                 class="w-full"
               >
                 <TransactionTable
-                  :transactions="repository.stackingRewardsMap.get(year)"
+                  :transactions="repository.stakingRewardsMap.get(year)"
                 />
               </div>
             </div>
@@ -203,7 +203,7 @@ module.exports = {
             this.repository.changeAddress(address).then(() => {
                 if (address === this.address) {
                     // only change the view data if the selected address has not changed since the execution
-                    this.selectableYears = Array.from(this.repository.stackingRewardsMap.keys())
+                    this.selectableYears = Array.from(this.repository.stakingRewardsMap.keys())
                     this.year = this.selectableYears[this.selectableYears.length - 1]
                     this.updateCurrentRewardSum()
                     this.isLoading = false
@@ -254,7 +254,7 @@ module.exports = {
         updateCurrentRewardSum() {
             const curreny = this.profile.currency
             let sum = 0.0
-            this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
+            this.repository.stakingRewardsMap.get(this.year).forEach(transaction => {
                 let tokens = transaction.amount
                 if (!utils.isCrypto(curreny)) {
                     tokens = tokens / utils.tokenValueFactor
@@ -284,13 +284,13 @@ module.exports = {
             const header = `${this.profile.network.token} ${amount} | ${this.profile.currency} ${value} | ${date} | ${transactionId}`
             rows.push(header)
 
-            this.repository.stackingRewardsMap.get(this.year).forEach(transaction => {
+            this.repository.stakingRewardsMap.get(this.year).forEach(transaction => {
                 rows.push(utils.buildExportRow(this.profile, transaction))
             })
 
             try {
                 const asString = rows.join("\n")
-                const fileName = `stacking_reward_report_${this.address}_${this.year}.csv`
+                const fileName = `staking_reward_report_${this.address}_${this.year}.csv`
                 const filePath = await walletApi.dialogs.save(asString, fileName, 'csv')
 
                 if (filePath) {

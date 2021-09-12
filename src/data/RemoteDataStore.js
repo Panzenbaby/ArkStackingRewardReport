@@ -123,12 +123,12 @@ class RemoteDataStore {
         return result
     }
 
-    getStackingRewards(transactions, votes) {
+    getStakingRewards(transactions, votes) {
         let result = []
         let lastVoteTime = votes[votes.length - 1].date
         let since = 0
         while (since < lastVoteTime) {
-            const res = this.getStackingRewardsSince(transactions, votes, since)
+            const res = this.getStakingRewardsSince(transactions, votes, since)
             Array.prototype.push.apply(result, res.result)
             since = res.downVoteTime
         }
@@ -136,7 +136,7 @@ class RemoteDataStore {
         return result
     }
 
-    getStackingRewardsSince(transactions, votes, since) {
+    getStakingRewardsSince(transactions, votes, since) {
         const result = []
         const upVote = votes.find(vote => !vote.isDownVote && since < vote.date)
         const downVote = votes.find(vote => vote.isDownVote && vote.delegatePublicKey === upVote.delegatePublicKey)

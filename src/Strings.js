@@ -2,7 +2,7 @@ const NO_WALLET_MESSAGE = "NO_WALLET_MESSAGE"
 const WALLET_IMPORT_NOW = "WALLET_IMPORT_NOW"
 const ADDRESS = "ADDRESS"
 const PERIOD = "PERIOD"
-const RECEIVED_STACKING_REWARDS = "RECEIVED_STACKING_REWARDS"
+const RECEIVED_STAKING_REWARDS = "RECEIVED_STAKING_REWARDS"
 
 const EXPORT_SUCCESS = "EXPORT_SUCCESS"
 
@@ -37,7 +37,7 @@ const en = {
     WALLET_IMPORT_NOW: "Import a wallet now!",
     ADDRESS: "Address",
     PERIOD: "Period",
-    RECEIVED_STACKING_REWARDS: "Received Stacking Rewards",
+    RECEIVED_STAKING_REWARDS: "Received Staking Rewards",
     EXPORT_SUCCESS: "Your report was saved at: ",
     TOOLTIP_EXPORT: "Export",
     TOOLTIP_RELOAD: "Reload",
@@ -66,7 +66,7 @@ const de = {
     WALLET_IMPORT_NOW: "Importiere jetzt eine Wallet!",
     ADDRESS: "Adresse",
     PERIOD: "Zeitraum",
-    RECEIVED_STACKING_REWARDS: "Erhaltene Stacking Rewards",
+    RECEIVED_STAKING_REWARDS: "Erhaltene Staking Rewards",
     TOOLTIP_EXPORT: "Exportieren",
     TOOLTIP_RELOAD: "Neu laden",
     EXPORT_SUCCESS: "Dein Bericht wurde hier gespeichert: ",
@@ -115,7 +115,7 @@ module.exports = {
     WALLET_IMPORT_NOW: WALLET_IMPORT_NOW,
     ADDRESS: ADDRESS,
     PERIOD: PERIOD,
-    RECEIVED_STACKING_REWARDS: RECEIVED_STACKING_REWARDS,
+    RECEIVED_STAKING_REWARDS: RECEIVED_STAKING_REWARDS,
     EXPORT_SUCCESS: EXPORT_SUCCESS,
     TOOLTIP_EXPORT: TOOLTIP_EXPORT,
     TOOLTIP_RELOAD: TOOLTIP_RELOAD,

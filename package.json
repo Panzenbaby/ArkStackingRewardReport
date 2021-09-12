@@ -1,18 +1,18 @@
 {
-  "name": "@panzenbaby/stacking-reward-report",
+  "name": "@panzenbaby/staking-reward-report",
   "version": "1.0.0",
-  "description": "Get an overview about your received stacking rewards.",
+  "description": "Get an overview about your received staking rewards.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Panzenbaby/ArkStackingRewardReport"
+    "url": "git+https://github.com/Panzenbaby/ArkStakingRewardReport"
   },
   "desktop-wallet": {
-    "title": "Stacking Reward Report",
-    "logo": "https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/logo.png",
+    "title": "Staking Reward Report",
+    "logo": "https://raw.githubusercontent.com/Panzenbaby/ArkStakingRewardReport/master/images/logo.png",
     "images": [
-      "https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/preview.png",
-      "https://raw.githubusercontent.com/Panzenbaby/ArkStackingRewardReport/master/images/preview_export.png"
+      "https://raw.githubusercontent.com/Panzenbaby/ArkStakingRewardReport/master/images/preview.png",
+      "https://raw.githubusercontent.com/Panzenbaby/ArkStakingRewardReport/master/images/preview_export.png"
     ],
     "categories": [
       "utility"
@@ -41,11 +41,11 @@
     "@arkecosystem",
     "desktop-wallet",
     "plugin",
-    "stacking",
+    "staking",
     "report"
   ],
   "bugs": {
-    "url": "https://github.com/Panzenbaby/ArkStackingRewardReport/issues"
+    "url": "https://github.com/Panzenbaby/ArkStakingRewardReport/issues"
   },
-  "homepage": "https://github.com/Panzenbaby/ArkStackingRewardReport"
+  "homepage": "https://github.com/Panzenbaby/ArkStakingRewardReport"
 }
