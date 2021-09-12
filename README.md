@@ -1,5 +1,5 @@
 # Staking Reward Report - ARK Desktop Wallet plugin
-Description of your plugin
+Get an overview about your received staking rewards.
 
 ## Installation
 
