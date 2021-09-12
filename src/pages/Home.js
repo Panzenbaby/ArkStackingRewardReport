@@ -148,6 +148,11 @@ module.exports = {
     watch: {
         address: function (address) {
             this.onAddressChanged(address)
+        },
+
+        profile: function () {
+            // refresh data due the currency could have changed
+            this.updatePrices()
         }
     },
 
@@ -217,6 +222,22 @@ module.exports = {
             this.onAddressChanged(this.address)
         },
 
+        async updatePrices() {
+            this.isLoading = true
+            await this.repository.updatePrices()
+            this.updateCurrentRewardSum()
+            this.isLoading = false
+        },
+
+        onRetryClicked() {
+            this.error = undefined
+            this.reload()
+        },
+
+        closeInfoModal() {
+            this.showInfoModal = false
+        },
+
         updateWallet() {
             const wallets = this.profile.wallets
             this.wallet = wallets.find(wallet => wallet.address === this.address)
@@ -252,15 +273,6 @@ module.exports = {
                     walletApi.storage.set(Keys.KEY_HAS_ACCEPT_DISCLAIMER, true)
                     break;
             }
-        },
-
-        closeInfoModal() {
-            this.showInfoModal = false
-        },
-
-        onRetryClicked() {
-            this.error = undefined
-            this.reload()
         },
 
         async onExport() {
