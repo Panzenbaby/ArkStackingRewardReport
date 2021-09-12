@@ -36,89 +36,81 @@ module.exports = {
         </div>
       </div>
         
-      <div
-          v-if="!isLoading" 
-          class="flex flex-row">
-            
-          <div class="flex flex-col border-l border-theme-line-separator px-12" >
-              <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                  {{ periodString }}
-              </span>
+      <div v-if="!isLoading" class="flex flex-col border-l border-theme-line-separator px-12" >
+          <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+              {{ periodString }}
+          </span>
     
-              <MenuDropdown
-                  ref="period"
-                  :disabled="isLoading"
-                  :items="years"
-                  :value="selectedYear"
-                  container-classes="whitespace-no-wrap"
-                  @select="onYearChanged" />
-          </div>
+          <MenuDropdown
+              ref="period"
+              :disabled="isLoading"
+              :items="years"
+              :value="selectedYear"
+              container-classes="whitespace-no-wrap"
+              @select="onYearChanged" />
+      </div>
             
-          <div
-            v-if="rewardSum" 
-            class="flex flex-col border-l border-theme-line-separator px-12" >
+      <div
+        v-if="!isLoading && rewardSum" 
+        class="flex flex-col border-l border-theme-line-separator px-12" >
           
-            <span class="text-sm text-theme-page-text-light font-semibold mb-1">
-                  {{ receivedStackingRewards }}
-            </span>
+        <span class="text-sm text-theme-page-text-light font-semibold mb-1">
+              {{ receivedStackingRewards }}
+        </span>
             
-            <span class="font-bold text-green">
-                  {{ formatCurrency(rewardSum, profile.currency) }}
-            </span>
-          </div>
+        <span class="font-bold text-green">
+              {{ formatCurrency(rewardSum, profile.currency) }}
+        </span>
+      </div>
             
-          <div class="flex items-center" >
-            
-            <button
-                class="ContactAll__CreateButton mr-4"
-                @click="onReloadClicked"
-                v-tooltip="{
-                    content: reloadString,
-                    trigger: 'hover'
-                }">
+      <div v-if="!isLoading" class="flex items-center ml-auto">
+        <button
+            class="ContactAll__CreateButton mr-4"
+            @click="onReloadClicked"
+            v-tooltip="{
+                content: reloadString,
+                trigger: 'hover'
+            }">
                   
-                <span class="ContactAll__CreateButton__icon">
+            <span class="ContactAll__CreateButton__icon">
                     
-                    <SvgIcon
+                <SvgIcon
                         name="reload"
-                        view-box="0 0 15 15"
+                    view-box="0 0 15 15"
                     />
-                 </span>
-            </button>
-          </div>
+             </span>
+        </button>
+      </div>
             
-          <div class="flex items-center" >
+      <div v-if="!isLoading" class="flex items-center" >
+          <button
+              class="ContactAll__CreateButton mr-4"
+              @click="onExportClicked"
+              v-tooltip="{
+                content: exportString,
+                trigger: 'hover'
+              }">
+                  
+              <span class="ContactAll__CreateButton__icon">
+                  
+                  <SvgIcon
+                      name="arrow-export"
+                      view-box="0 0 15 15"
+                  />
+              </span>
+          </button>
+      </div>
           
-              <button
-                  class="ContactAll__CreateButton mr-4"
-                  @click="onExportClicked"
-                  v-tooltip="{
-                    content: exportString,
-                    trigger: 'hover'
-                  }">
+      <div v-if="!isLoading" class="flex items-center" >
+          <button
+              class="ContactAll__CreateButton mr-4"
+              @click="onInfoClicked">
                   
-                  <span class="ContactAll__CreateButton__icon">
+              <span class="ContactAll__CreateButton__icon">
                   
-                      <SvgIcon
-                          name="arrow-export"
-                          view-box="0 0 15 15"
-                      />
-                  </span>
-              </button>
-          </div>
-          
-          <div class="flex items-center" >
-          
-              <button
-                  class="ContactAll__CreateButton mr-4"
-                  @click="onInfoClicked">
-                  
-                  <span class="ContactAll__CreateButton__icon">
-                  
-                      <InfoIcon view-box="0 0 15 15"/>
-                  </span>
-              </button>
-          </div>
+                  <InfoIcon view-box="0 0 15 15"/>
+              </span>
+          </button>
       </div>
         
       <div v-else class="flex flex-col border-l border-theme-line-separator px-12" >
