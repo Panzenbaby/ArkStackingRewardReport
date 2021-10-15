@@ -132,7 +132,8 @@ module.exports = {
         noWalletMessage: '',
         walletImportNow: '',
         errorTitleLabel: '',
-        retryLabel: ''
+        retryLabel: '',
+        executionPermission: {canceled: false}
     }),
 
     async mounted() {
@@ -200,16 +201,24 @@ module.exports = {
             }
 
             this.isLoading = true
-            this.repository.changeAddress(address).then(() => {
+            this.executionPermission.canceled = true
+            this.executionPermission = {canceled: false}
+            this.repository.changeAddress(this.executionPermission, address).then((executionPermission) => {
                 if (address === this.address) {
-                    // only change the view data if the selected address has not changed since the execution
-                    this.selectableYears = Array.from(this.repository.stakingRewardsMap.keys())
-                    this.year = this.selectableYears[this.selectableYears.length - 1]
-                    this.updateCurrentRewardSum()
+                    if (!executionPermission.canceled) {
+                        // only change the view data if the selected address has not changed since the execution
+                        this.selectableYears = Array.from(this.repository.stakingRewardsMap.keys())
+                        this.year = this.selectableYears[this.selectableYears.length - 1]
+                        this.updateCurrentRewardSum()
+                    }
                     this.isLoading = false
                 }
             }).catch((error) => {
-                this.error = error
+                console.log("error 1 " + error)
+                if (!error.executionPermission.canceled) {
+                    console.log("error 2")
+                    this.error = error
+                }
             })
         },
 

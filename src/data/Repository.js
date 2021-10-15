@@ -15,15 +15,20 @@ class Repository {
         this.stakingRewardsMap = new Map()
     }
 
-    async changeAddress(address) {
-        this.profile = walletApi.profiles.getCurrent()
-        this.address = address
-        await this.loadData()
+    async changeAddress(executionPermission, address) {
+        try {
+            this.profile = walletApi.profiles.getCurrent()
+            this.address = address
+            await this.loadData(executionPermission)
+            return executionPermission
+        } catch (error) {
+            throw new ExecutionError(executionPermission, error.message, error.stack)
+        }
     }
 
-    async loadData() {
-        const transactions = await this.remoteDataStore.getTransactions(this.address)
-        this.votes = await this.remoteDataStore.getVotes(this.address)
+    async loadData(executionPermission) {
+        const transactions = await this.remoteDataStore.getTransactions(executionPermission, this.address)
+        this.votes = await this.remoteDataStore.getVotes(executionPermission, this.address)
 
         transactions.sort(this.dateComparator)
         this.votes.sort(this.dateComparator)
@@ -70,6 +75,15 @@ class Repository {
 
             Object.assign(transaction, {closePrice: closePrice})
         })
+    }
+}
+
+class ExecutionError extends Error {
+
+    constructor(executionPermission, message, stack) {
+        super(message);
+        this.stack = stack;
+        this.executionPermission = executionPermission;
     }
 }
 

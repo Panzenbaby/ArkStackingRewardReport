@@ -5,9 +5,9 @@ class RemoteDataStore {
     constructor() {
     }
 
-    async getTransactions(address) {
+    async getTransactions(executionPermission, address) {
         const path = `wallets/${address}/transactions/received?limit=100`
-        let response = await this.getAllPagesOf(path)
+        let response = await this.getAllPagesOf(executionPermission, path)
 
         const result = []
         try {
@@ -46,9 +46,9 @@ class RemoteDataStore {
         return result
     }
 
-    async getVotes(address) {
+    async getVotes(executionPermission, address) {
         const path = `wallets/${address}/votes?limit=100`
-        let response = await this.getAllPagesOf(path)
+        let response = await this.getAllPagesOf(executionPermission, path)
 
         const result = []
         try {
@@ -105,7 +105,7 @@ class RemoteDataStore {
         return result
     }
 
-    async getAllPagesOf(requestPath) {
+    async getAllPagesOf(executionPermission, requestPath) {
         let page = 1
         let data = []
         let result = []
@@ -118,7 +118,7 @@ class RemoteDataStore {
             data = response.data
             Array.prototype.push.apply(result, data)
             page++
-        } while (data && data.length > 0)
+        } while (!executionPermission.canceled && data && data.length > 0)
 
         return result
     }
