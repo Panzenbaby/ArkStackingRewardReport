@@ -125,6 +125,10 @@ class RemoteDataStore {
 
     getStakingRewards(transactions, votes) {
         let result = []
+        if (votes.length === 0) {
+            return result
+        }
+
         let lastVoteTime = votes[votes.length - 1].date
         let since = 0
         while (since < lastVoteTime) {

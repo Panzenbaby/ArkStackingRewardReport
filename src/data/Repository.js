@@ -50,12 +50,17 @@ class Repository {
 
         for (const entry of this.transactionsMap.entries()) {
             const year = entry[0]
-            const transaction = entry[1]
+            const transactions = entry[1]
 
-            const prices = await this.remoteDataStore.loadPrices(transaction)
-            await this.applyPrices(transaction, prices)
+            if (transactions.length === 0) {
+                this.stakingRewardsMap.set(year, [])
+                continue
+            }
 
-            const rewards = this.remoteDataStore.getStakingRewards(transaction, this.votes)
+            const prices = await this.remoteDataStore.loadPrices(transactions)
+            await this.applyPrices(transactions, prices)
+
+            const rewards = this.remoteDataStore.getStakingRewards(transactions, this.votes)
             rewards.sort(this.dateComparatorDesc)
             this.stakingRewardsMap.set(year, rewards)
         }
